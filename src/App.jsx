@@ -1,5 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import './style.css'
+import closeIcon from './assets/ui/close.png'
+import levelIcon from './assets/ui/level.png'
+import soldierIcon from './assets/ui/soldier.png'
+import soundIcon from './assets/ui/sound.png'
+import toggleOffIcon from './assets/ui/toggle-off.png'
+import toggleOnIcon from './assets/ui/toggle-on.png'
+import vibrationIcon from './assets/ui/vibration.png'
+import volumeIcon from './assets/ui/volume.png'
+
+const iconAssets = {
+  sound: soundIcon,
+  volume: volumeIcon,
+  vibration: vibrationIcon,
+  soldier: soldierIcon,
+  level: levelIcon,
+}
 
 const defaultSettings = {
   sound: true,
@@ -18,8 +34,13 @@ function ToggleSwitch({ checked, label, onChange }) {
       aria-pressed={checked}
       onClick={onChange}
     >
-      <span className="toggle-text">{checked ? 'ON' : 'OFF'}</span>
-      <span className="toggle-knob" />
+      <img
+        className="toggle-art"
+        src={checked ? toggleOnIcon : toggleOffIcon}
+        alt=""
+        aria-hidden="true"
+      />
+      <span className="sr-only">{checked ? 'ON' : 'OFF'}</span>
     </button>
   )
 }
@@ -58,91 +79,18 @@ function SettingRow({ icon, label, children }) {
   return (
     <div className="setting-row">
       <IconBadge type={icon} />
-      <span className="setting-label">{label}</span>
+      <span className={`setting-label ${label.length > 4 ? 'is-long' : ''}`}>
+        {label}
+      </span>
       <div className="setting-control">{children}</div>
     </div>
   )
 }
 
 function IconBadge({ type }) {
-  const common = {
-    className: 'icon-svg',
-    viewBox: '0 0 96 96',
-    role: 'img',
-    'aria-hidden': 'true',
-  }
-
-  if (type === 'sound') {
-    return (
-      <span className="icon-badge">
-        <svg {...common}>
-          <path className="icon-shadow" d="M15 39h17l24-20v58L32 57H15z" />
-          <path className="icon-cream" d="M15 37h18l23-20v58L33 55H15z" />
-          <path className="icon-line" d="M15 37h18l23-20v58L33 55H15z" />
-          <path className="icon-line" d="M68 33c8 8 8 22 0 30" />
-          <path className="icon-line" d="M78 22c15 16 15 36 0 52" />
-        </svg>
-      </span>
-    )
-  }
-
-  if (type === 'volume') {
-    return (
-      <span className="icon-badge">
-        <svg {...common}>
-          <path className="icon-cream" d="M13 42h15l22-17v46L28 54H13z" />
-          <path className="icon-line" d="M13 42h15l22-17v46L28 54H13z" />
-          <rect className="bar green" x="60" y="21" width="18" height="12" rx="5" />
-          <rect className="bar green" x="60" y="39" width="18" height="12" rx="5" />
-          <rect className="bar yellow" x="60" y="57" width="18" height="12" rx="5" />
-          <rect className="bar gray" x="60" y="75" width="18" height="12" rx="5" />
-        </svg>
-      </span>
-    )
-  }
-
-  if (type === 'vibration') {
-    return (
-      <span className="icon-badge">
-        <svg {...common}>
-          <path className="icon-line" d="M18 30c-7 8-7 28 0 36M8 22c-10 17-10 35 0 52M78 30c7 8 7 28 0 36M88 22c10 17 10 35 0 52" />
-          <rect className="phone-body" x="32" y="17" width="32" height="62" rx="7" />
-          <path className="phone-glow" d="M39 25h18v6H39z" />
-          <path className="icon-line" d="M42 49h12M48 43v12" />
-          <circle className="red-dot" cx="58" cy="64" r="5" />
-        </svg>
-      </span>
-    )
-  }
-
-  if (type === 'soldier') {
-    return (
-      <span className="icon-badge">
-        <svg {...common}>
-          <path className="shield" d="M17 26l31-13 31 13v25c0 18-13 29-31 36-18-7-31-18-31-36z" />
-          <path className="helmet" d="M25 40c4-19 16-27 33-21 9 4 15 11 17 21l-9 6H34z" />
-          <path className="helmet-spot" d="M56 24c7 1 12 5 14 11-7-1-12-4-14-11z" />
-          <circle className="face" cx="49" cy="50" r="18" />
-          <path className="icon-line thin" d="M39 49l7-3M58 46l7 3" />
-          <path className="mouth" d="M45 59c3 3 7 3 10 0" />
-          <path className="star" d="M22 70l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-          <path className="star" d="M48 69l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-          <path className="star" d="M74 70l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-        </svg>
-      </span>
-    )
-  }
-
   return (
-    <span className="icon-badge">
-      <svg {...common}>
-        <path className="level-plate" d="M12 31c2-11 10-16 22-16h28c12 0 20 5 22 16v22c0 15-13 26-36 34C25 79 12 68 12 53z" />
-        <rect className="level-screen" x="20" y="25" width="56" height="34" rx="9" />
-        <text className="level-text" x="28" y="50">Lv.20</text>
-        <path className="star" d="M27 62l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-        <path className="star" d="M49 62l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-        <path className="star" d="M71 62l4 8 9 1-7 6 2 8-8-4-8 4 2-8-7-6 9-1z" />
-      </svg>
+    <span className={`icon-badge icon-${type}`}>
+      <img src={iconAssets[type]} alt="" aria-hidden="true" />
     </span>
   )
 }
@@ -150,8 +98,7 @@ function IconBadge({ type }) {
 function CloseButton({ onClick }) {
   return (
     <button type="button" className="close-button" aria-label="关闭设置" onClick={onClick}>
-      <span />
-      <span />
+      <img src={closeIcon} alt="" aria-hidden="true" />
     </button>
   )
 }
@@ -262,6 +209,7 @@ function App() {
   const saveSettings = () => {
     clearTimeout(saveTimer.current)
     setShowToast(true)
+    // Let the confirmation bubble read before closing the panel.
     saveTimer.current = setTimeout(() => {
       setShowToast(false)
       setPanelVisible(false)
